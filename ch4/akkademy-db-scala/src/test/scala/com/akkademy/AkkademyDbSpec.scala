@@ -32,5 +32,14 @@ class AkkademyDbSpec extends FunSpec with Matchers {
       val result = Await.result(future.mapTo[Int], 2.seconds)
       result should be (456)
     }
+
+    it("should set list value") {
+      akkademyDbRef ! List(
+        SetRequest("zdx", 123),
+        SetRequest("ygy", 456)
+      )
+      akkademyDb.map.get("zdx") should be (Some(123))
+      akkademyDb.map.get("ygy") should be (Some(456))
+    }
   }
 }
