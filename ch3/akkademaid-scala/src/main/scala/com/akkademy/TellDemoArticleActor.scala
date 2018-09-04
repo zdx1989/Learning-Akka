@@ -20,14 +20,13 @@ class TellDemoArticleActor(cacheActorPath: String,
   val httpClientActor = context.actorSelection(httpClientActorPath)
   val articleParserActor = context.actorSelection(articleParserActorPath)
   val log = Logging(context.system, this)
-  val senderRef = sender()
   import scala.concurrent.ExecutionContext.Implicits.global
 
   override def receive: Receive = {
     case ParseArticle(url) =>
       val extraActor = buildExtraActor(sender(), url)
       cacheActor.tell(GetRequest(url), extraActor)
-      httpClientActor.tell(url, sender())
+      httpClientActor.tell(url, extraActor)
       context.system.scheduler.scheduleOnce(3.seconds, extraActor, "timeout")
   }
 

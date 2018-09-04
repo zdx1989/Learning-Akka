@@ -16,7 +16,7 @@ class AskDemoArticleActor(cacheActorPath: String,
                           httpClientActorPath: String,
                           articleParserActorPath: String,
                           implicit val timeout: Timeout) extends Actor {
-  val cacheActor = context.actorSelection(cacheActorPath)
+  val cacheActor = context.system.actorSelection(cacheActorPath)
   val httpClientActor = context.actorSelection(httpClientActorPath)
   val articleParserActor = context.actorSelection(articleParserActorPath)
   val log = Logging(context.system, this)
