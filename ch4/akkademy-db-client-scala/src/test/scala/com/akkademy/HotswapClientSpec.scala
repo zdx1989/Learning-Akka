@@ -3,7 +3,7 @@ package com.akkademy
 import akka.actor.{ActorSystem, Props, Status}
 import akka.testkit.{TestActorRef, TestProbe}
 import akka.util.Timeout
-import com.akkademy.AkkademyDb.{Connected, SetRequest}
+import com.akkademy.AkkademyDb.{GetRequest, SetRequest}
 import org.scalatest.{FunSpec, Matchers}
 
 import scala.concurrent.duration._
@@ -25,6 +25,16 @@ class HotswapClientSpec extends FunSpec with Matchers {
       client ! SetRequest("zdx", 123, probe.ref)
       probe.expectMsg(Status.Success)
       akkademyDb.map.get("zdx") should be (Some(123))
+    }
+
+    it("should get value from db") {
+      val akkademyDbRef = TestActorRef(new AkkademyDb)
+      val akkademyDb = akkademyDbRef.underlyingActor
+      akkademyDb.map.put("ygy", 456)
+      val client = TestActorRef(Props(classOf[HotswapClientActor], akkademyDbRef.path.toString))
+      val probe = TestProbe()
+      client ! GetRequest("ygy", probe.ref)
+      probe.expectMsg(456)
     }
   }
 }
