@@ -30,10 +30,10 @@ class AkkademyDb extends Actor {
       sender() ! Status.Failure(new ClassNotFoundException())
   }
 
-  def handleGetRequest(k: String, sendRef: ActorRef): Unit = {
+  def handleGetRequest(k: String, senderRef: ActorRef): Unit = {
     log.info(s"receive GetRequest - key: $k")
     map.get(k) match {
-      case Some(k) => sender() ! k
+      case Some(k) => senderRef ! k
       case None => sender() ! Status.Failure(KeyNotFoundException(k))
     }
   }
@@ -41,7 +41,7 @@ class AkkademyDb extends Actor {
   def handleSetRequest(k: String, v: Any, senderRef: ActorRef): Unit = {
     log.info(s"receive SetRequest - key: $v value: $v")
     map.put(k, v)
-    sender() ! Status.Success
+    senderRef ! Status.Success
   }
 }
 

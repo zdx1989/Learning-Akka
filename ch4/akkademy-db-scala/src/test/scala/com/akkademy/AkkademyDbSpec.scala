@@ -1,7 +1,7 @@
 package com.akkademy
 
-import akka.actor.ActorSystem
-import akka.testkit.TestActorRef
+import akka.actor.{ActorSystem, Status}
+import akka.testkit.{TestActorRef, TestProbe}
 import akka.pattern.ask
 import akka.util.Timeout
 import com.akkademy.AkkademyDb.{GetRequest, SetRequest}
@@ -22,7 +22,9 @@ class AkkademyDbSpec extends FunSpec with Matchers {
     val akkademyDb = akkademyDbRef.underlyingActor
 
     it("should set a value") {
-      akkademyDbRef ! SetRequest("zdx", 123)
+      val probe = TestProbe()
+      akkademyDbRef ! SetRequest("zdx", 123, probe.ref)
+      probe.expectMsg(Status.Success)
       akkademyDb.map.get("zdx") should be (Some(123))
     }
 

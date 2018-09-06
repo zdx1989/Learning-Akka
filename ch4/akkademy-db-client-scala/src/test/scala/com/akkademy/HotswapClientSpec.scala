@@ -20,8 +20,8 @@ class HotswapClientSpec extends FunSpec with Matchers {
     it("should set a value into db") {
       val akkademyDbRef = TestActorRef(new AkkademyDb)
       val akkademyDb = akkademyDbRef.underlyingActor
-      val client = system.actorOf(Props(classOf[HotswapClientActor], akkademyDbRef.path.toString))
       val probe = TestProbe()
+      val client = TestActorRef(Props(classOf[HotswapClientActor], akkademyDbRef.path.toString))
       client ! SetRequest("zdx", 123, probe.ref)
       probe.expectMsg(Status.Success)
       akkademyDb.map.get("zdx") should be (Some(123))
