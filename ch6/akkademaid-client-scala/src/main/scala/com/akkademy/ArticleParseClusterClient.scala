@@ -14,7 +14,7 @@ import scala.concurrent.duration._
 object ArticleParseClusterClient {
 
   def main(args: Array[String]): Unit = {
-    implicit val timeout = Timeout(5.seconds)
+    implicit val timeout = Timeout(10.seconds)
     val system = ActorSystem("clientSystem")
     val initialContacts: Set[ActorSelection] = Set(
       system.actorSelection("akka.tcp://Akkademy@127.0.0.1:2552/user/receptionist"),
